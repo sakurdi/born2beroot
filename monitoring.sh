@@ -10,9 +10,9 @@ total_ram=`free -m | grep "Mem:" | awk '{print $2}'`
 used_ram=`free -m | grep "Mem:" | awk '{print $3}'`
 ram_percentage=`free -m | grep "Mem:" | awk '{printf("%.2f%%"), $3/$2*100}'`
 
-root_lvm_size=`df -Bg | grep '^/dev/' | grep -v '/boot' | awk '{print $2}' | head -n 1 | sed 's/[^0-9]*//g'`
-root_lvm_used=`df -Bm | grep '^/dev/' | grep -v '/boot' | awk '{print $3}' | head -n 1 | sed 's/[^0-9]*//g'`
-disk_percentage=`printf('test disk perc')`
+root_lvm_size=`df -Bg | grep '^/dev/' | grep -v '/boot' | awk '{print $2+0}' | head -n 1`
+root_lvm_used=`df -Bm | grep '^/dev/' | grep -v '/boot' | awk '{print $3+0}' | head -n 1`
+root_total_percentage=`df -Bm | grep '^/dev/' | grep -v '/boot' | awk '{printf("%d%%"), ($3+0)/($2+0) * 100} '| head -n 1`
 
 
 cpu_load=`top -b -n 1 | grep "%Cpu" | awk '{printf("%.1f%%"), $2 + $4}'`
@@ -26,20 +26,19 @@ logged_users=`users | wc -w`
 ipv4=`hostname -I`
 mac_adddr=`ip link show | grep "link/ether" | awk '{print $2}'`
 sudo_cmds=`sudo journalctl _COMM=sudo | grep "COMMAND" | wc -l`
-#wall "	#Architecture: $arch
+wall "	#Architecture: $arch
 	#CPU physical: $phys_cpu
 	#vCPU: $virt_cpu_cores
-	#Memory Usage: $uram/${fram}MB ($pram%)
-	#Disk Usage: $udisk/${fdisk}Gb ($pdisk%)
-	#CPU load: $cpul
-	#Last boot: $lb
-	#LVM use: $lvmu
-	#Connexions TCP: $ctcp ESTABLISHED
-	#User log: $ulog
-	#Network: IP $ip ($mac)
-	#Sudo: $cmds cmd" 
+	#Memory Usage: $used_ram/${total_ram}MB ($ram_percentage)
+	#Disk Usage: $root_lvm_used/${root_lvm_size}Gb ($root_total_percentage)
+	#CPU load: $cpu_load
+	#Last boot: $last_reboot
+	#LVM use: $lvm_yesno
+	#Connexions TCP: $tcp_inuse ESTABLISHED
+	#User log: $logged_users
+	#Network: IP $ipv4 ($mac_adddr)
+	#Sudo: $sudo_cmds cmd" 
 
-echo "$used_ram/${total_ram}MB ($ram_percentage)"
-echo "$root_lvm_used/$root_lvm_size"
-echo "cpu load : $cpu_load"
-echo $disk_percentage
+#echo "$used_ram/${total_ram}MB ($ram_percentage)"
+#echo "cpu load : $cpu_load"
+#echo "disk perc $root_lvm_used/$root_lvm_size ($root_total_percentage)"
