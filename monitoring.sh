@@ -10,9 +10,9 @@ total_ram=`free -m | grep "Mem:" | awk '{print $2}'`
 used_ram=`free -m | grep "Mem:" | awk '{print $3}'`
 ram_percentage=`free -m | grep "Mem:" | awk '{printf("%.2f%%"), $3/$2*100}'`
 
-root_lvm_size=`df -Bg | grep '^/dev/' | grep -v '/boot' | awk '{print $2+0}' | head -n 1`
-root_lvm_used=`df -Bm | grep '^/dev/' | grep -v '/boot' | awk '{print $3+0}' | head -n 1`
-root_total_percentage=`df -Bm | grep '^/dev/' | grep -v '/boot' | awk '{printf("%d%%"), ($3+0)/($2+0) * 100} '| head -n 1`
+root_lvm_size=`df -Bg | grep '^/dev/' | grep -v '/boot' | head -n 1 | awk '{print $2+0}'`
+root_lvm_used=`df -Bm | grep '^/dev/' | grep -v '/boot' | head -n 1 | awk '{print $3+0}'`
+root_total_percentage=`df -Bm | grep '^/dev/' | grep -v '/boot' | head -n 1 | awk '{printf("%d%%"), ($3+0)/($2+0) * 100} '`
 
 
 cpu_load=`top -b -n 1 | grep "%Cpu" | awk '{printf("%.1f%%"), $2 + $4}'`
